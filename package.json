@@ -1,0 +1,49 @@
+{
+  "name": "blog-app",
+  "version": "1.0.0",
+  "description": "Full-stack blog application with React frontend and Express backend",
+  "private": true,
+  "scripts": {
+    "dev": "NODE_ENV=development && concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:e2e": "NODE_ENV=test && concurrently \"npm run dev:backend:e2e\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:backend:e2e": "cd backend && npm run dev:e2e",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "bash scripts/build_frontend.bash",
+    "build:render": "bash scripts/build_for_render.sh",
+    "build:start": "npm run build && npm run start:prod",
+    "start:with-build": "npm run build && npm run start:prod",
+    "start": "cd backend && npm run start",
+    "start:prod": "NODE_ENV=production && cd backend && npm run start:prod",
+    "test": "NODE_ENV=test && concurrently \"npm run test:backend\" \"npm run test:frontend\"",
+    "test:backend": "NODE_ENV=test && cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "test:e2e": "NODE_ENV=test && cd e2e && npm test",
+    "test:all": "NODE_ENV=test && npm run test && npm run test:e2e",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install && cd ../e2e && npm install",
+    "lint": "concurrently \"npm run lint:backend\" \"npm run lint:frontend\"",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:frontend": "cd frontend && npm run lint",
+    "e2e:install": "cd e2e && npm run install",
+    "e2e:ui": "cd e2e && npx playwright test --ui",
+    "e2e:report": "cd e2e && npx playwright show-report"
+  },
+  "workspaces": [
+    "backend",
+    "frontend",
+    "e2e"
+  ],
+  "keywords": [
+    "blog",
+    "react",
+    "express",
+    "mongodb",
+    "fullstack"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "concurrently": "^8.2.2"
+  }
+}

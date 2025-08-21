@@ -1,0 +1,59 @@
+name: blog-app-all-dev
+
+services:
+  frontend-dev:
+    container_name: blog-app-frontend-dev
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 5173:5173
+    env_file:
+      - .env.development
+
+  backend-dev:
+    image: blog-app-backend-dev
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    env_file:
+      - .env.development
+    container_name: blog-app-backend-dev
+    depends_on:
+      - mongo
+
+  mongo:
+    container_name: blog-app-mongo-dev
+    image: mongo
+    ports:
+      - "${MONGO_PORT:-3456}:27017"
+    volumes:
+      - ./backend/mongo_data:/data/db
+    env_file:
+      - .env.development
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-root1234}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-blog-app}
+
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: blog-app-reverse-proxy-dev
+    depends_on:
+      - frontend-dev
+      - backend-dev
+
+volumes:
+  mongo_data:

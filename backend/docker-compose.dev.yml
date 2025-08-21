@@ -1,0 +1,30 @@
+name: blog-app-backend-dev
+
+services:
+  blog-app-backend-dev:
+    image: blog-app-backend-dev
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    container_name: blog-app-backend-dev
+
+  mongo:
+    container_name: blog-app-mongo-dev
+    image: mongo
+    ports:
+      - "${MONGO_PORT:-3456}:27017"
+    volumes:
+      - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - .mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-root1234}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-blog-app-app}
+
+volumes:
+  mongo_data:
